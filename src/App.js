@@ -157,6 +157,9 @@ const App = () => {
               />
             </>
           ) : null}
+          <p className="footer">
+            Copyright © 2024 Rushi Butani. All Rights Reserved.
+          </p>
         </div>
       )}
     </div>

@@ -35,9 +35,9 @@ body {
 
 .app {
   width: 70%;
-  margin: 20px auto;
+  margin: 20px auto 20px auto;
   border-radius: 15px;
-  padding: 40px 30px;
+  padding: 40px 30px 20px 30px;
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -275,6 +275,11 @@ body {
       background-color: rgb(242, 233, 231);
     }
   }
+}
+
+.footer {
+  margin-top: 20px;
+  font-weight: 600;
 }
 
 // Loader css
