@@ -14,15 +14,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const storedLocation = localStorage.getItem("currentLocation");
-
-    if (storedLocation) {
-      setCurrentLocation(storedLocation);
-      fetchWeatherData(storedLocation);
-      generateLast7Days(storedLocation);
-    } else {
-      fetchCurrentLocation();
-    }
+    fetchCurrentLocation();
   }, []);
 
   const fetchCurrentLocation = async () => {
@@ -30,12 +22,11 @@ const App = () => {
       const locationResponse = await fetch(config.CURRENT_LOCATION_FETCH_API);
       const locationData = await locationResponse.json();
 
-      if (locationData.city && locationData.country) {
-        const newLocation = `${locationData.city}, ${locationData.country}`;
-        setCurrentLocation(newLocation);
-        localStorage.setItem("currentLocation", newLocation);
-        fetchWeatherData(newLocation);
-        generateLast7Days(newLocation);
+      if (locationData.ip) {
+        setCurrentLocation(locationData.ip);
+        localStorage.setItem("currentLocation", locationData.ip);
+        fetchWeatherData(locationData.ip);
+        generateLast7Days(locationData.ip);
       } else {
         setError("Please enter a valid location");
       }

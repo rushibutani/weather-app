@@ -94,20 +94,22 @@ export const Loader = () => {
             ></path>
           </svg>
 
-          <div class="rain">
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
-            <span class="drop"></span>
+          <div className="rain">
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
+            <span className="drop"></span>
           </div>
 
-          <div class="text">LOOKING OUTSIDE OF YOUR LOCATION... ONE SEC</div>
+          <div className="text">
+            LOOKING OUTSIDE OF YOUR LOCATION... ONE SEC
+          </div>
         </div>
       </div>
     </>
