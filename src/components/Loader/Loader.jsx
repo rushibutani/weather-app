@@ -108,7 +108,7 @@ export const Loader = () => {
           </div>
 
           <div className="text">
-            LOOKING OUTSIDE OF YOUR LOCATION... ONE SEC
+            Don't worry, be breezy! We're fetching your forecast.
           </div>
         </div>
       </div>

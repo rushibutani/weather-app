@@ -1,57 +1,87 @@
-import React, { useState } from "react";
-import { MdKeyboardArrowLeft } from "react-icons/md";
-import { MdKeyboardArrowRight } from "react-icons/md";
+import React, { useState, useRef, useEffect } from "react";
 
-const Carousel = ({ items }) => {
-  const itemsPerPage = 8;
-  const totalItems = items.length;
-  const [currentIndex, setCurrentIndex] = useState(0);
+const Carousel = ({ children }) => {
+  const sliderRef = useRef(null);
+  const [startPosition, setStartPosition] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [selectedItemIndex, setSelectedItemIndex] = useState(0);
+  const [itemWidth, setItemWidth] = useState(200);
 
-  const nextItem = () => {
-    if (currentIndex < totalItems - itemsPerPage) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-    }
+  useEffect(() => {
+    const itemCount = children.length;
+    const containerWidth = sliderRef.current.offsetWidth;
+    setItemWidth(containerWidth / itemCount);
+  }, []);
+
+  const handleMouseDown = (e, index) => {
+    setIsDragging(true);
+    setStartPosition(e.clientX);
+    setSelectedItemIndex(index);
   };
 
-  const prevItem = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + totalItems) % totalItems);
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+    const delta = e.clientX - startPosition;
+    sliderRef.current.scrollLeft -= delta;
+    setStartPosition(e.clientX);
   };
 
-  const startItemIndex = currentIndex % totalItems;
-  const endItemIndex = (startItemIndex + itemsPerPage) % totalItems;
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
 
-  const displayedItems =
-    startItemIndex <= endItemIndex
-      ? items.slice(startItemIndex, endItemIndex)
-      : [...items.slice(startItemIndex), ...items.slice(0, endItemIndex)];
+  const handleTouchStart = (e, index) => {
+    setStartPosition(e.touches[0].clientX);
+    setSelectedItemIndex(index);
+  };
 
-  const isAtFirstItem = currentIndex === 0;
-  const isAtLastItem = currentIndex >= totalItems - itemsPerPage;
+  const handleTouchMove = (e) => {
+    const delta = e.touches[0].clientX - startPosition;
+    sliderRef.current.scrollLeft -= delta;
+    setStartPosition(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
+  const handleSnapToSlide = () => {
+    if (!itemWidth) return;
+    const newSlideIndex = Math.round(sliderRef.current.scrollLeft / itemWidth);
+    setSelectedItemIndex(newSlideIndex);
+  };
+
+  useEffect(() => {
+    const handleScrollEnd = () => {
+      handleSnapToSlide();
+    };
+    sliderRef.current.addEventListener("scroll", handleScrollEnd);
+    return () =>
+      sliderRef?.current?.removeEventListener("scroll", handleScrollEnd);
+  }, [itemWidth]);
 
   return (
-    <div className="carousel-container">
-      <MdKeyboardArrowLeft
-        className="prev-next-button"
-        onClick={!isAtFirstItem ? prevItem : null}
-      />
-
-      <div className="carousel-items">
-        {displayedItems.map((item, index) => (
-          <div
-            key={index}
-            className={`carousel-item ${
-              index === startItemIndex ? "active" : ""
-            }`}
-          >
-            {item}
-          </div>
-        ))}
-      </div>
-
-      <MdKeyboardArrowRight
-        className="prev-next-button"
-        onClick={!isAtLastItem ? nextItem : null}
-      />
+    <div
+      className="slider"
+      ref={sliderRef}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
+      {children.map((child, index) => (
+        <div
+          key={index}
+          className={`carousel-item ${
+            index === selectedItemIndex ? "selected" : ""
+          }`}
+          onMouseDown={(e) => handleMouseDown(e, index)}
+          onTouchStart={(e) => handleTouchStart(e, index)}
+        >
+          {child}
+        </div>
+      ))}
     </div>
   );
 };

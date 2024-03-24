@@ -5,12 +5,12 @@ import Carousel from "./Carousel";
 const WeatherCard = ({ weatherData, pastSevenDays }) => {
   const { location, forecast } = weatherData;
   const { name, country } = location;
-  const { avgtemp_c } = forecast.forecastday[0].day;
+  const { avgtemp_c, maxtemp_c, mintemp_c } = forecast.forecastday[0].day;
   const [displayDate, setDisplayDate] = useState("");
 
   const getCurrentDatetimeString = () => {
     const timeZone = location.tz_id;
-    const format = "ddd, DD/MM/YYYY, HH:mm";
+    const format = "ddd,DD/MM/YYYY, HH:mm";
     const currentTime = moment().tz(timeZone).format(format);
     return currentTime;
   };
@@ -56,28 +56,30 @@ const WeatherCard = ({ weatherData, pastSevenDays }) => {
         <div className="location-details">
           <p className="city-name">{name}</p>
           <p className="country-name">{location.region + ", " + country}</p>
-
-          <div className="time-day">
-            <p>{displayDate}</p>
-          </div>
+          <p className="time-day">{displayDate}</p>
         </div>
 
-        <p className="degree">{convertTemperature(avgtemp_c)}</p>
-
         <div className="icon-container">
-          <div className="degree-buttons">
-            <button
-              onClick={() => setTemperatureUnit("C")}
-              className={temperatureUnit === "C" ? "active" : ""}
-            >
-              °C
-            </button>
-            <button
-              onClick={() => setTemperatureUnit("F")}
-              className={temperatureUnit === "F" ? "active" : ""}
-            >
-              °F
-            </button>
+          <button
+            onClick={() =>
+              setTemperatureUnit(temperatureUnit === "C" ? "F" : "C")
+            }
+            className="degree-button"
+          >
+            °{temperatureUnit}
+          </button>
+
+          <div className="today-weather">
+            <p className="degree">{convertTemperature(avgtemp_c)}</p>
+
+            <div className="min-max">
+              <span className="max-temp">
+                High: {convertTemperature(maxtemp_c)}
+              </span>
+              <span className="min-temp">
+                Low: {convertTemperature(mintemp_c)}
+              </span>
+            </div>
           </div>
 
           <img
@@ -90,38 +92,42 @@ const WeatherCard = ({ weatherData, pastSevenDays }) => {
       </div>
 
       <div className="fullday-forecast-container">
-        <div>Today Hourly Forecast</div>
-        <Carousel
-          items={(forecast.forecastday[0].hour || []).map((data, index) => (
+        <div>Hourly forecast</div>
+        <Carousel>
+          {(forecast.forecastday[0].hour || []).map((data, index) => (
             <div key={index} className="fullday-forecast">
               <p>{data.time.slice(10)}</p>
               <img src={"https://" + data.condition.icon.slice(2)} alt="img" />
               <p>{convertTemperature(data.temp_c)}</p>
             </div>
           ))}
-        />
+        </Carousel>
       </div>
 
       <div className="sevendays-forecast-container">
-        <div>7 Day Forecast</div>
-        {(pastSevenDays || []).map((data, index) => (
-          <div key={index} className="sevenday-forecast">
-            <p> {formatLocalTime(data.forecast.forecastday[0].date)}</p>
+        <p>7-day forecast</p>
+        <div className="slider-content">
+          {(pastSevenDays || []).map((data, index) => (
+            <div key={index} className="sevenday-forecast">
+              <p> {formatLocalTime(data.forecast.forecastday[0].date)}</p>
 
-            <div className="icon-time">
-              <img
-                src={
-                  "https://" +
-                  data.forecast.forecastday[0].day.condition.icon.slice(2)
-                }
-                alt="img"
-              />
-              <p>
-                {convertTemperature(data.forecast.forecastday[0].day.avgtemp_c)}
-              </p>
+              <div className="icon-time">
+                <img
+                  src={
+                    "https://" +
+                    data.forecast.forecastday[0].day.condition.icon.slice(2)
+                  }
+                  alt="img"
+                />
+                <p>
+                  {convertTemperature(
+                    data.forecast.forecastday[0].day.avgtemp_c
+                  )}
+                </p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ const SelectLocation = ({ onLocationSubmit }) => {
           type="text"
           value={locationInput}
           onChange={(e) => handleInputChange(e.target.value)}
+          placeholder="Search Location"
         />
 
         <div className="search-icon" onClick={handleSubmit}>

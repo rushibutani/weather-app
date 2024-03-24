@@ -122,37 +122,34 @@ const App = () => {
 
   return (
     <div>
-      {isLoading && !error ? (
-        <div className="blur">
+      <div className="app">
+        {isLoading && !error ? (
           <Loader />
-        </div>
-      ) : (
-        <div className="app">
-          {error ? (
-            <>
-              <SelectLocation
-                onLocationSubmit={handleLocationSubmit}
-                defaultLocation={currentLocation}
-              />
-              <ErrorMessage onRetry={handleRetry} />
-            </>
-          ) : weatherData ? (
-            <>
-              <SelectLocation
-                onLocationSubmit={handleLocationSubmit}
-                defaultLocation={currentLocation}
-              />
-              <WeatherCard
-                weatherData={weatherData}
-                pastSevenDays={pastSevenDays}
-              />
-            </>
-          ) : null}
-          <p className="footer">
-            Copyright © 2024 Rushi Butani. All Rights Reserved.
-          </p>
-        </div>
-      )}
+        ) : error ? (
+          <>
+            <SelectLocation
+              onLocationSubmit={handleLocationSubmit}
+              defaultLocation={currentLocation}
+            />
+            <ErrorMessage onRetry={handleRetry} />
+          </>
+        ) : weatherData ? (
+          <>
+            <SelectLocation
+              onLocationSubmit={handleLocationSubmit}
+              defaultLocation={currentLocation}
+            />
+            <WeatherCard
+              weatherData={weatherData}
+              pastSevenDays={pastSevenDays}
+            />
+
+            <p className="footer">
+              Copyright © 2024 Rushi Butani. All Rights Reserved.
+            </p>
+          </>
+        ) : null}
+      </div>
     </div>
   );
 };
